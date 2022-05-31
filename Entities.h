@@ -135,6 +135,18 @@ public:
 
 };
 
+
+class Order {
+	vector<Meal> meals;
+};
+
+class Table {
+	string table_no;
+	vector<Order> orders;
+	string MessageFromKitchen;
+};
+
+
 class Restaurant {
 	string name;
 	string adress;
@@ -172,6 +184,52 @@ public:
 
 	void IncreaseBudget(double b) {
 		budget += b;
+	}
+
+};
+
+
+
+class Stock {
+	vector<Ingredient> ingredients;
+public:
+	void AddIngredient() {
+
+	}
+	void DeleteIngredient() {
+
+	}
+	void ShowAllIngredients() {
+
+	}
+	void DecraseIngredientCount() {
+
+	}
+	void IncreaseIngredientCount() {
+
+	}
+};
+
+class Kitchen {
+	vector<Order> orders;
+
+public:
+	void ShowAllMeals() {
+
+	}
+	
+	void AddMeal() {
+
+	}
+	void DeleteMeal() {
+
+	}
+	void UpdateMeal(){
+
+	}
+
+	void ShowStock() {
+
 	}
 
 };
