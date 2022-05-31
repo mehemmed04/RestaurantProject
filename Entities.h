@@ -9,7 +9,7 @@ protected:
 	double fats;
 	double protein;
 	double carbohydrates;
-	int kcal;
+	double kcal;
 	double price;
 public:
 	Ingredient() {
@@ -132,6 +132,12 @@ public:
 		this->password = password;
 	}
 
+	string GetUsername() {
+		return username;
+	}
+	string GetPassword() {
+		return password;
+	}
 
 };
 
@@ -154,6 +160,7 @@ class Restaurant {
 	double budget = 0;
 	vector<Admin> admins;
 public:
+	Restaurant() = default;
 	Restaurant(const string& name, const string& adress, const string& city) {
 		SetName(name);
 		SetAdress(adress);
@@ -163,6 +170,10 @@ public:
 
 	Restaurant(const string& name, const string& adress, const string& city, vector<Admin> admins):Restaurant(name,adress,city) {
 		SetAdmins(admins);
+	}
+
+	vector<Admin>GetAdmins() {
+		return admins;
 	}
 
 	void SetName(const string& name) { this->name = name; }
