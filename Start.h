@@ -36,10 +36,10 @@ public:
 			
 			if (key == '\r') {// carriage return  = Enter
 				if (counter == 1) {
-					ShowAdminMenu();
+					AdminPanel();
 				}
 				else if (counter == 2) {
-					ShowClientMenu();
+					ClientPanel();
 				}
 			}
 			Set[0] = 7;
@@ -68,11 +68,14 @@ public:
 
 	}
 
-	void ShowAdminMenu() {
+	void AdminPanel() {
 		color(7);
 	}
-	void ShowClientMenu() {
+	void ClientPanel() {
 		color(7);
+		system("cls");
+		cout << "Enter Tabel number : ";
+
 	}
 
 	void color(int color) {
