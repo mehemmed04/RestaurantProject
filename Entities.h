@@ -1,6 +1,9 @@
 #pragma once
 #include<iostream>
+#include"Start.h"
 #include<vector>
+#include<string>
+#include"Functions.h"
 using namespace std;
 
 class Ingredient {
@@ -72,10 +75,13 @@ public:
 	}
 	int GetAmount()const { return amount; }
 
-	void ShowRecipeItem()const {
+	void ShowRecipeItemWithMicro()const {
 		cout << "amount : " << amount << " gr" << endl;
 		ingredient.ShowIngredient();
-
+	}
+	void ShowRecipeItem() {
+		cout << "amount : " << amount << " gr" << endl;
+		cout << "Name : " << ingredient.GetName()<<endl;
 	}
 
 };
@@ -101,6 +107,13 @@ public:
 
 	virtual void Taste() {
 		cout << "I do not know what is this ? " << endl;
+	}
+
+	virtual void PrintRecipeWithMicro() {
+		cout << "INGREDIENTS : " << endl;
+		for (auto i : items) {
+			i.ShowRecipeItemWithMicro();
+		}
 	}
 
 	virtual void PrintRecipe() {
@@ -204,15 +217,48 @@ public:
 class Stock {
 	vector<Ingredient> ingredients;
 public:
-	void AddIngredient() {
 
+
+	Ingredient GetIngredient() {
+		string name; double fats; double protein; double carbohydrates; double price;
+		double kcal;
+		system("cls");
+		SetCordinates(50, 10);
+		cout << "Enter Ingredient Name : "; getline(cin, name);
+		SetCordinates(50, 11);
+		cout << "Enter Ingredient Fats : "; cin >> fats;
+		SetCordinates(50, 12);
+		cout << "Enter Ingredient Protein : "; cin >> protein;
+		SetCordinates(50, 13);
+		cout << "Enter Ingredient Carbohydrates : "; cin >> carbohydrates;
+		SetCordinates(50, 14);
+		cout << "Enter Ingredient kcal : "; cin >> kcal;
+		SetCordinates(50, 15);
+		cout << "Enter Ingredient Price : "; cin >> price;
+
+		return Ingredient(name, fats, protein, carbohydrates, kcal, price);
+
+	}
+
+	void AddIngredient(const Ingredient& ingredient) {
+		ingredients.push_back(ingredient);
 	}
 	void DeleteIngredient() {
 
 	}
 	void ShowAllIngredients() {
-
+		cout << "STOCK : " << endl;
+		for (auto i : ingredients) {
+			i.ShowIngredient();
+			cout << endl;
+		}
+		
 	}
+	Ingredient GetIngredientByName(const string& name) {
+
+		return Ingredient();
+	}
+
 	void DecraseIngredientCount() {
 
 	}
