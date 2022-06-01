@@ -86,9 +86,6 @@ public:
 
 };
 
-
-//Yemek DISH
-
 class Meal {
 protected:
 	vector<RecipeItem> items;
@@ -110,17 +107,25 @@ public:
 	}
 
 	virtual void PrintRecipeWithMicro() {
-		cout << "INGREDIENTS : " << endl;
+		cout << "Meal name : " << GetName() << endl;
+		cout << "Meal Rating : " << rating << endl;
+		cout << "Meal Ingredients : " << endl;
 		for (auto i : items) {
 			i.ShowRecipeItemWithMicro();
 		}
+		cout << "-----------------" << endl;
+
+
 	}
 
 	virtual void PrintRecipe() {
-		cout << "INGREDIENTS : " << endl;
+		cout << "Meal name : " << GetName() << endl;
+		cout << "Meal Rating : " << rating << endl;
+		cout << "Meal Ingredients : " << endl;
 		for (auto i : items) {
 			i.ShowRecipeItem();
 		}
+		cout << "-----------------" << endl;
 	}
 };
 
@@ -156,13 +161,48 @@ public:
 
 
 class Order {
+	string Table_no;
 	vector<Meal> meals;
+public:
+	Order(string Table_no,vector<Meal> meals) {
+		this->Table_no = Table_no;
+		SetMeals(meals);
+	}
+	void SetMeals(vector<Meal> meals) {
+		this->meals = meals;
+	}
+
+	string GetTableNoByOrder() { return Table_no; }
+	void ShowOrder() {
+		for (auto meal : meals) {
+			meal.PrintRecipe();
+		}
+	}
 };
 
 class Table {
 	string table_no;
 	vector<Order> orders;
 	string MessageFromKitchen;
+public:
+	Table() = default;
+	Table(const string& table_no) {
+		SetTableNo(table_no);
+	}
+	void SetTableNo(const string& table_no) {
+		this->table_no = table_no;
+	}
+	string GetTableNo()const {
+		return table_no;
+	}
+	void AddOrder(const Order& order) {
+		orders.push_back(order);
+	}
+
+	void SetMessageFromKitchen(const string& message) {
+		this->MessageFromKitchen = message;
+	}
+
 };
 
 
@@ -172,6 +212,7 @@ class Restaurant {
 	string city;
 	double budget = 0;
 	vector<Admin> admins;
+	vector<Table> tables;
 public:
 	Restaurant() = default;
 	Restaurant(const string& name, const string& adress, const string& city) {
@@ -181,8 +222,26 @@ public:
 		budget = 0;
 	}
 
+
+	Table* GetTableByNoPtr(const string& table_no) {
+		for (auto table : tables) {
+			if (table.GetTableNo() == table_no) return &table;
+		}
+		return nullptr;
+	}
+
+	Table GetTableByNo(const string& table_no) {
+		for (auto table : tables) {
+			if (table.GetTableNo() == table_no) return table;
+		}
+	}
+
 	Restaurant(const string& name, const string& adress, const string& city, vector<Admin> admins):Restaurant(name,adress,city) {
 		SetAdmins(admins);
+	}
+
+	void AddTable(const Table& table) {
+		tables.push_back(table);
 	}
 
 	vector<Admin>GetAdmins() {
@@ -217,8 +276,6 @@ public:
 class Stock {
 	vector<Ingredient> ingredients;
 public:
-
-
 	Ingredient GetIngredient() {
 		string name; double fats; double protein; double carbohydrates; double price;
 		double kcal;
@@ -255,7 +312,11 @@ public:
 		
 	}
 	Ingredient GetIngredientByName(const string& name) {
-
+		for (auto i : ingredients) {
+			if (i.GetName() == name) {
+				return i;
+			}
+		}
 		return Ingredient();
 	}
 
@@ -269,24 +330,51 @@ public:
 
 class Kitchen {
 	vector<Order> orders;
-
+	vector<Meal> meals;
 public:
-	void ShowAllMeals() {
-
+	void ShowAllOrders() {
+		system("cls");
+		for (auto order : orders) {
+			cout << "Table : " << order.GetTableNoByOrder() << endl;
+			order.ShowOrder();
+			cout << "=====================" << endl;
+		}
 	}
-	
-	void AddMeal() {
-
+	void AddOrder(const Order& order) {
+		orders.push_back(order);
+	}
+	void AddMeal(const Meal& meal) {
+		meals.push_back(meal);
 	}
 	void DeleteMeal() {
 
 	}
+
+	Meal* GetMealPtrByName(const string& meal_name) {
+		for (auto meal : meals) {
+			if (meal.GetName() == meal_name) return &meal;
+		}
+		return nullptr;
+	}
+
+	Meal GetMealByName(const string& meal_name) {
+		for (auto meal : meals) {
+			if (meal.GetName() == meal_name) return meal;
+		}
+	}
+
 	void UpdateMeal(){
 
 	}
 
 	void ShowStock() {
+		
+	}
 
+	void ShowAllMeals() {
+		for (auto meal : meals) {
+			meal.PrintRecipe();
+		}
 	}
 
 };

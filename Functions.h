@@ -17,3 +17,4 @@ void SetCordinates(int x, int y) {
 void color(int color) {
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
 }
+

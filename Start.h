@@ -16,13 +16,32 @@ class Controller {
 	char key;
 public:
 	void INIT() {
+		Table t1("T1");
+		Table t2("T2");
+		Table t3("T3");
+
 		Restaurant r("Zeytin Bagi", "9-cu mkr", "Baku", vector<Admin>{Admin("admin", "admin")});
 		database.restaurant = r;
+		database.restaurant.AddTable(t1);
+		database.restaurant.AddTable(t2);
+		database.restaurant.AddTable(t3);
 		Ingredient i1("Cheese", 20.3, 25.2, 3.2, 200.25, 1.5);
 		Ingredient i2("Tomato", 5, 1.2, 3.4, 170.25, 0.5);
+
+		RecipeItem r1(i1, 3);
+		RecipeItem r2(i2, 2);
+
+		Meal m1("Dolma", 9.8);
+		m1.AddIngredient(r1);
+		m1.AddIngredient(r2);
+
+		Meal m2("Plov", 9.6);
+		m2.AddIngredient(r1);
+
 		database.stock.AddIngredient(i1);
 		database.stock.AddIngredient(i2);
-
+		database.kitchen.AddMeal(m1);
+		database.kitchen.AddMeal(m2);
 	}
 
 	void StartProject() {
@@ -103,7 +122,7 @@ public:
 					system("pause");
 				}
 				else if (counter == 2) {
-					//ClientPanel();
+					ClientPanel();
 				}
 			}
 			Set[0] = 7;
@@ -174,7 +193,8 @@ public:
 
 			if (key == '\r') {// carriage return  = Enter
 				if (counter == 1) {
-					//KITCHEN
+					database.kitchen.ShowAllOrders();
+					system("pause");
 
 				}
 				else if (counter == 2) {
@@ -307,5 +327,68 @@ public:
 
 	}
 
+	void ClientPanel() {
+		system("cls");
+		color(7);
+		SetCordinates(55, 12);
+		string table_no;
+		cout << "Enter Table No : "; getline(cin, table_no);
+
+		Table* CurrentTablePtr = database.restaurant.GetTableByNoPtr(table_no);
+
+		if (CurrentTablePtr != nullptr) {
+			Table CurrentTable = database.restaurant.GetTableByNo(table_no);
+			system("cls");
+			database.kitchen.ShowAllMeals();
+			
+			order(CurrentTable);
+			system("pause");
+			
+
+		}
+		else {
+			system("cls");
+			SetCordinates(45, 12);
+			color(12);
+			cout << "There is not table by this name, Try agin." << endl;
+			color(7);
+			system("pause");
+		}
+
+	}
+
+
+	void order(Table& table) {
+		vector<Meal>meals;
+		do
+		{
+			string meal_name;
+			cout << "Enter Meal Name : " << endl;
+			getline(cin, meal_name);
+			int choose = 0;
+			Meal* CurrentMealPtr = database.kitchen.GetMealPtrByName(meal_name);
+			if (CurrentMealPtr != nullptr) {
+				Meal CurrentMeal = database.kitchen.GetMealByName(meal_name);
+				cout << "Do yu want to continue to order Yes(1) : " << endl;
+				cin >> choose;
+				cin.ignore();
+				cin.clear();
+				meals.push_back(CurrentMeal);
+				if (choose == 1) {
+					continue;
+				}
+				else {
+					break;
+				}
+			}
+			else {
+				cout << "There is not meal by this name. Try again." << endl;
+			}
+		} while (true);
+		Order ord(table.GetTableNo(), meals);
+		table.AddOrder(ord);
+		database.kitchen.AddOrder(ord);
+
+	}
 
 };
