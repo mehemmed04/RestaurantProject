@@ -88,7 +88,10 @@ Database ReadDatabaseFromFile() {
 		k.AddOrder(Order(Table_no,meals ));
 
 	}
-
+	database.restaurant = r;
+	database.kitchen = k;
+	database.stock = s;
+	return database;
 }
 void WriteDatabaseToFile(Database& database) {
 	Restaurant r = database.restaurant;

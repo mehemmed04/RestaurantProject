@@ -22,18 +22,34 @@ public:
 		Table t1("T1");
 		Table t2("T2");
 		Table t3("T3");
+		Table t4("T4");
+		Table t5("T5");
+		Table t6("T6");
+		Table t7("T7");
+		Table t8("T8");
+		Table t9("T9");
 
 		Restaurant r("Zeytin Bagi", "9-cu mkr", "Baku", vector<Admin>{Admin("admin", "admin") , Admin("admin", "12345")  });
 		database.restaurant = r;
 		database.restaurant.AddTable(t1);
 		database.restaurant.AddTable(t2);
 		database.restaurant.AddTable(t3);
+		database.restaurant.AddTable(t4);
+		database.restaurant.AddTable(t5);
+		database.restaurant.AddTable(t6);
+		database.restaurant.AddTable(t7);
+		database.restaurant.AddTable(t8);
+		database.restaurant.AddTable(t9);
+
 		Ingredient i1("Cheese", 20.3, 25.2, 3.2, 200.25, 1.5);
 		Ingredient i2("Rice", 1, 6, 80, 240.25, 1.5);
 		Ingredient i3("Tomato", 5, 1.2, 3.4, 170.25, 0.5);
 		Ingredient i4("Salt", 0.1, 0.6, 0, 1, 0.1);
 		Ingredient i5("Beef", 23, 123, 12, 549, 15);
 		Ingredient i6("Cucumber", 1, 3, 9, 20, 0.5);
+		Ingredient i7("Pepper", 0.1, 0.2, 0.5, 0.9, 0.5);
+		Ingredient i8("Milk", 10, 30, 90, 200, 3.5);
+		Ingredient i9("Chicken", 20, 40 ,15 , 220, 5.5);
 
 		RecipeItem r1(i1, 3);
 		RecipeItem r2(i2, 200);
@@ -41,6 +57,9 @@ public:
 		RecipeItem r4(i4, 2);
 		RecipeItem r5(i5, 300);
 		RecipeItem r6(i6, 300);
+		RecipeItem r7(i7, 300);
+		RecipeItem r8(i8, 300);
+		RecipeItem r9(i9, 300);
 
 		Meal m1("Dolma", 9.8);
 		m1.AddIngredient(r5);
@@ -51,10 +70,19 @@ public:
 		m2.AddIngredient(r4);
 		m2.AddIngredient(r3);
 
-		Meal m3("Salat", 3.5);
+		Meal m3("Salat", 4.5);
 		m3.AddIngredient(r3);
 		m3.AddIngredient(r6);
 
+		Meal m4("Doner",7.5);
+		m4.AddIngredient(r2);
+		m4.AddIngredient(r4);
+		m4.AddIngredient(r7);
+
+		Meal m5("Xengel", 5.5);
+		m5.AddIngredient(r4);
+		m5.AddIngredient(r9);
+		m5.AddIngredient(r7);
 
 		database.stock.AddIngredient(i1);
 		database.stock.AddIngredient(i2);
@@ -62,9 +90,14 @@ public:
 		database.stock.AddIngredient(i4);
 		database.stock.AddIngredient(i5);
 		database.stock.AddIngredient(i6);
+		database.stock.AddIngredient(i7);
+		database.stock.AddIngredient(i8);
+		database.stock.AddIngredient(i9);
 		database.kitchen.AddMeal(m1);
 		database.kitchen.AddMeal(m2);
 		database.kitchen.AddMeal(m3);
+		database.kitchen.AddMeal(m4);
+		database.kitchen.AddMeal(m5);
 		WriteDatabaseToFile(database);
 	}
 
@@ -545,6 +578,7 @@ public:
 				Order ord(CurrentTable.GetTableNo(), meals);
 				database.restaurant.GetTableByNoPtr(table_no)->AddOrder(ord);
 				database.kitchen.AddOrder(ord);
+				WriteDatabaseToFile(database);
 			}
 			else{
 				system("cls");
