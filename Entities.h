@@ -169,7 +169,7 @@ public:
 
 	virtual void PrintRecipeWithMicro() {
 		cout << "Meal name : " << GetName() << endl;
-		cout << "Meal Price : " <<price << endl;
+		cout << "Meal Price : " <<price <<"$" << endl;
 		cout << "Meal Rating : " << rating << endl;
 		cout << "Meal Ingredients : " << endl;
 		for (auto i : items) {

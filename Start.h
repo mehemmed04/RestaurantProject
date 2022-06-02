@@ -547,11 +547,20 @@ public:
 			Table CurrentTable = database.restaurant.GetTableByNo(table_no);
 			system("cls");
 			database.kitchen.ShowAllMeals();
-			
+
 			if (!IsReadyOrder) {
 				vector<Meal>meals;
 				do
 				{
+					cout << "If you want to see calories press 1 : "; int choose; cin >> choose; cin.ignore(); cin.clear();
+					if (choose == 1) {
+						string meal_name;
+						cout << "Enter Meal Name : " << endl;
+						getline(cin, meal_name);
+						Meal CurrentMeal = database.kitchen.GetMealByName(meal_name);
+						CurrentMeal.PrintRecipeWithMicro();
+					}
+
 					string meal_name;
 					cout << "Enter Meal Name : " << endl;
 					getline(cin, meal_name);
