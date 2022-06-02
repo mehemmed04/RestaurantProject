@@ -51,7 +51,7 @@ public:
 	double GetProtein()const { return protein; }
 	double GetCarbohydrates()const { return carbohydrates; }
 	double GetKcal()const { return kcal; }
-
+	double GetPrice() const { return price; }
 
 	void ShowIngredient()const {
 		cout << "Name : " << name << endl;
@@ -59,16 +59,21 @@ public:
 		cout << "Fats : " << fats << endl;
 		cout << "Protein : " << protein << endl;
 		cout << "Carbohydrates : " << carbohydrates << endl;
+		cout << "Price : " << price << endl;
 	}
 
 };
 
 
 
-struct RecipeItem {
+class RecipeItem {
 	Ingredient ingredient;
 	int amount = 0;// neche dene
 public:
+	Ingredient GetIngredient() {
+		return ingredient;
+	}
+
 	RecipeItem(Ingredient ingredient, int amount) {
 		this->ingredient = ingredient;
 		this->amount = amount;
@@ -91,14 +96,54 @@ protected:
 	vector<RecipeItem> items;
 	string name;
 	double rating;
+	double price;
 public:
+
 	Meal() {}
-	Meal(const string& name,const double& rating) {
+	Meal(const string& name, const double& rating) {
+		SetName(name);
+		SetRating(rating);
+		SetPrice();
+	}
+
+	void AddRating(const double& rating) {
+		double new_rating = (this->rating * items.size() + rating) / (items.size() + 1);
+		SetRating(new_rating);
+	}
+
+	void SetPrice() {
+		price = 0;
+		for (auto i : items) {
+			price += i.GetIngredient().GetPrice();
+		}
+
+	}
+
+	Meal& operator=(const Meal& other) {
+		this->SetName(other.name);
+		this->SetRating(other.rating);
+		this->items = other.items;
+		return *this;
+	}
+
+	void SetName(const string& name) {
 		this->name = name;
+	}
+	void SetRating(const double& rating) {
 		this->rating = rating;
 	}
+	bool operator==(const Meal& other) {
+		if (name == other.GetName() && rating == other.GetRating()) return true;
+		return false;
+	}
+
+	double GetRating()const {
+		return rating;
+	}
+
 	virtual void AddIngredient(RecipeItem item) {
 		items.push_back(item);
+		SetPrice();
 	}
 	string GetName()const { return name; }
 
@@ -108,6 +153,7 @@ public:
 
 	virtual void PrintRecipeWithMicro() {
 		cout << "Meal name : " << GetName() << endl;
+		cout << "Meal Price : " <<price << endl;
 		cout << "Meal Rating : " << rating << endl;
 		cout << "Meal Ingredients : " << endl;
 		for (auto i : items) {
@@ -120,6 +166,7 @@ public:
 
 	virtual void PrintRecipe() {
 		cout << "Meal name : " << GetName() << endl;
+		cout << "Meal Price : " << price << endl;
 		cout << "Meal Rating : " << rating << endl;
 		cout << "Meal Ingredients : " << endl;
 		for (auto i : items) {
@@ -128,7 +175,6 @@ public:
 		cout << "-----------------" << endl;
 	}
 };
-
 
 
 class Admin {
@@ -159,11 +205,12 @@ public:
 
 };
 
-
 class Order {
+public:
 	string Table_no;
 	vector<Meal> meals;
-public:
+	bool IsReady = false;
+	Order() = default;
 	Order(string Table_no,vector<Meal> meals) {
 		this->Table_no = Table_no;
 		SetMeals(meals);
@@ -178,16 +225,44 @@ public:
 			meal.PrintRecipe();
 		}
 	}
+
+	Order& operator=(const Order& other) {
+		this->Table_no = other.Table_no;
+		this->meals = other.meals;
+		this->IsReady = other.IsReady;
+		return *this;
+
+	}
 };
 
 class Table {
-	string table_no;
-	vector<Order> orders;
-	string MessageFromKitchen;
 public:
+	string table_no;
+	Order order;
+	string MessageFromKitchen="";
+	bool IsReady = false;
 	Table() = default;
 	Table(const string& table_no) {
 		SetTableNo(table_no);
+	}
+
+	Table(const Table& other) {
+		this->SetTableNo(other.GetTableNo());
+		this->SetMessageFromKitchen(other.MessageFromKitchen);
+		this->IsReady = other.IsReady;
+		this->order = other.order;
+	}
+
+	Table& operator=(const Table& other) {
+		this->SetTableNo(other.GetTableNo());
+		this->SetMessageFromKitchen(other.MessageFromKitchen);
+		this->IsReady = other.IsReady;
+		this->order = other.order;
+		return *this;
+	}
+
+	string GetMessageFromKitchen() {
+		return MessageFromKitchen;
 	}
 	void SetTableNo(const string& table_no) {
 		this->table_no = table_no;
@@ -196,7 +271,7 @@ public:
 		return table_no;
 	}
 	void AddOrder(const Order& order) {
-		orders.push_back(order);
+		this->order = order;
 	}
 
 	void SetMessageFromKitchen(const string& message) {
@@ -204,7 +279,6 @@ public:
 	}
 
 };
-
 
 class Restaurant {
 	string name;
@@ -228,6 +302,14 @@ public:
 			if (table.GetTableNo() == table_no) return &table;
 		}
 		return nullptr;
+	}
+
+	void SetTable(const Table& new_table) {
+		for (auto table : tables) {
+			if (table.GetTableNo() == new_table.GetTableNo()) {
+				table = new_table;
+			}
+		}
 	}
 
 	Table GetTableByNo(const string& table_no) {
@@ -271,8 +353,6 @@ public:
 
 };
 
-
-
 class Stock {
 	vector<Ingredient> ingredients;
 public:
@@ -300,10 +380,20 @@ public:
 	void AddIngredient(const Ingredient& ingredient) {
 		ingredients.push_back(ingredient);
 	}
-	void DeleteIngredient() {
+	int GetIngredientIndex(const Ingredient& ingredient) {
+		int count = -1;
+		for (auto i : ingredients) {
+			count++;
+			if (i.GetName() == ingredient.GetName()) return count;
+		}
 
 	}
-	void ShowAllIngredients() {
+
+	void DeleteIngredient(const Ingredient& ingredient) {
+		int iterator = GetIngredientIndex(ingredient);
+		ingredients.erase(ingredients.begin() + iterator);
+	}
+	void ShowAllIngredients() const {
 		cout << "STOCK : " << endl;
 		for (auto i : ingredients) {
 			i.ShowIngredient();
@@ -320,11 +410,16 @@ public:
 		return Ingredient();
 	}
 
-	void DecraseIngredientCount() {
+	void DecraseIngredientPrice(const string& name) {
+		auto Ingredient = GetIngredientByName(name);
+		cout << "Enter new price : "; double price; cin >> price;
+		Ingredient.SetPrice(price);
 
 	}
-	void IncreaseIngredientCount() {
-
+	void IncreaseIngredientPrice(const string& name) {
+		auto Ingredient = GetIngredientByName(name);
+		cout << "Enter new price : "; double price; cin >> price;
+		Ingredient.SetPrice(price);
 	}
 };
 
@@ -335,19 +430,29 @@ public:
 	void ShowAllOrders() {
 		system("cls");
 		for (auto order : orders) {
-			cout << "Table : " << order.GetTableNoByOrder() << endl;
-			order.ShowOrder();
-			cout << "=====================" << endl;
+			if (!order.IsReady) {
+				cout << "Table : " << order.GetTableNoByOrder() << endl;
+				order.ShowOrder();
+				cout << "=====================" << endl;
+			}
 		}
 	}
+
+	Meal GetMeal() {
+		string name;
+		double rating;
+		cout << "Enter meal name : "; getline(cin, name);
+		cout << "Enter rating : "; cin >> rating;
+
+		Meal meal(name, rating);
+		return meal;
+	}
+
 	void AddOrder(const Order& order) {
 		orders.push_back(order);
 	}
 	void AddMeal(const Meal& meal) {
 		meals.push_back(meal);
-	}
-	void DeleteMeal() {
-
 	}
 
 	Meal* GetMealPtrByName(const string& meal_name) {
@@ -364,11 +469,23 @@ public:
 	}
 
 	void UpdateMeal(){
+		auto newMeal = GetMeal();
+		string meal_name;
+		cout << "Enter Meal name : ";
+		cin.ignore(); cin.clear();
+		getline(cin, meal_name);
+		auto Meal = GetMealByName(meal_name);
 
+		for (auto meal : meals) {
+			if (meal == Meal) {
+				meal = newMeal;
+				break;
+			}
+		}
 	}
 
-	void ShowStock() {
-		
+	void ShowStock(const Stock& stock) {
+		stock.ShowAllIngredients();
 	}
 
 	void ShowAllMeals() {

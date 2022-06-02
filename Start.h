@@ -14,6 +14,7 @@ class Controller {
 	int Set[6] = { 7,7,7,7,7,7 }; //DEFAULT COLORS
 	int counter = 1;
 	char key;
+
 public:
 	void INIT() {
 		Table t1("T1");
@@ -48,7 +49,7 @@ public:
 		INIT();
 		Start();
 	}
-
+	bool IsReadyOrder = false;
 	void Start() {
 		counter = 1;
 		Set[0] = 7;
@@ -193,9 +194,7 @@ public:
 
 			if (key == '\r') {// carriage return  = Enter
 				if (counter == 1) {
-					database.kitchen.ShowAllOrders();
-					system("pause");
-
+					KitchenPanel();
 				}
 				else if (counter == 2) {
 					StockPanel();
@@ -222,6 +221,143 @@ public:
 
 	}
 	
+	void KitchenPanel() {
+		counter = 3;
+		Set[0] = 7;
+		Set[1] = 7;
+		Set[2] = 7;
+		Set[3] = 7;
+		Set[4] = 7;
+		Set[5] = 7;
+		color(Set[0]);
+		while (true)
+		{
+			system("cls");
+			SetCordinates(55, 10);
+			color(Set[0]);
+			cout << "Show All Orders " << endl;
+			SetCordinates(55, 11);
+			color(Set[1]);
+			cout << "Show All Meals  " << endl;
+			SetCordinates(55, 12);
+			color(Set[2]);
+			cout << "   Add Meal     " << endl;
+			SetCordinates(55, 13);
+			color(Set[3]);
+			cout << "  Update Meal    " << endl;
+			SetCordinates(55, 14);
+			color(Set[4]);
+			cout << "  Show Stock   " << endl;
+			SetCordinates(55, 15);
+			color(Set[5]);
+			cout << "     Back   " << endl;
+
+
+			key = _getch();
+			if (key == 80 && (counter >= 1 && counter <= 2)) counter++; // 80 down arrow key
+
+			else if (key == 72 && (counter >= 2 && counter <= 3)) counter--; // 72 up arrow key
+			else if (key == 80 && (counter >= 2 && counter <= 3)) counter++; // 80 down arrow key
+
+			else if (key == 72 && (counter >= 3 && counter <= 4)) counter--; // 72 up arrow key
+			else if (key == 80 && (counter >= 3 && counter <= 4)) counter++; // 80 down arrow key
+
+			else if (key == 72 && (counter >= 4 && counter <= 5)) counter--; // 72 up arrow key
+			else if (key == 80 && (counter >= 4 && counter <= 5)) counter++; // 80 down arrow key
+
+			else if (key == 72 && (counter >= 5 && counter <= 6)) counter--; // 72 up arrow key
+
+
+
+			if (key == '\r') {// carriage return  = Enter
+				if (counter == 1) {
+					system("cls");
+					database.kitchen.ShowAllOrders();
+					system("pause");
+					int select = 0;
+					//Table CurrentTable;
+					//Table* CurrentTablePtr;
+					cout << "Accept [1],  Reject [2] : "; cin >> select;
+					if (select == 1) {
+						cout << "Enter Table number : ";
+						string Table_no;
+						cin.ignore();
+						cin.clear();
+						getline(cin, Table_no);
+						//Table* CurrentTablePtr = database.restaurant.GetTableByNoPtr(Table_no);
+						Table CurrentTable = database.restaurant.GetTableByNo(Table_no);
+						CurrentTable.SetMessageFromKitchen("Your request accepted");
+						CurrentTable.IsReady = true;
+						database.restaurant.SetTable(CurrentTable);
+						IsReadyOrder = true;
+					}
+					else if (select == 2) {
+						cout << "Enter Table number : ";
+						string Table_no;
+						cin.ignore();
+						cin.clear();
+						getline(cin, Table_no);
+						Table CurrentTable = database.restaurant.GetTableByNo(Table_no);
+						CurrentTable = database.restaurant.GetTableByNo(Table_no);
+						CurrentTable.SetMessageFromKitchen("Your request rejected");
+						CurrentTable.IsReady = true;
+					}
+					else {
+						break;
+					}
+
+
+				}
+				else if (counter == 2) {
+					system("cls");
+					database.kitchen.ShowAllMeals();
+					system("pause");
+				}
+				else if (counter == 3) {
+					Meal meal = database.kitchen.GetMeal();
+					database.kitchen.AddMeal(meal);
+					cout << "Meal added succesfully" << endl;
+				}
+				else if (counter == 4) {
+					database.kitchen.UpdateMeal();
+				}
+				else if (counter == 5) {
+					system("cls");
+					database.kitchen.ShowStock(database.stock);
+					system("pause");
+				}
+				else if (counter == 6) {
+					AdminPanel(CurrentAdmin);
+				}
+			}
+			Set[0] = 7;
+			Set[1] = 7;
+			Set[2] = 7;
+			Set[3] = 7;
+			Set[4] = 7;
+			Set[5] = 7;
+			if (counter == 1) {
+				Set[0] = 12; // Color RED
+			}
+			else if (counter == 2) {
+				Set[1] = 12;
+			}
+			else if (counter == 3) {
+				Set[2] = 12;
+			}
+			else if (counter == 4) {
+				Set[3] = 12;
+			}
+			else if (counter == 5) {
+				Set[4] = 12;
+			}
+			else if (counter == 6) {
+				Set[5] = 12;
+			}
+
+
+		}
+	}
 
 	void StockPanel() {
 		counter = 3;
@@ -287,13 +423,25 @@ public:
 					system("pause");
 				}
 				else if (counter == 3) {
-					//DeleteIngredient
+					string ingredient_name;
+					cout << "Enter Ingredient Name : "; getline(cin, ingredient_name);
+					auto ingredient = database.stock.GetIngredientByName(ingredient_name);
+
+					database.stock.DeleteIngredient(ingredient);
+					system("cls");
+					SetCordinates(50, 13);
+					cout << "Ingredient Deleted Succesfully" << endl;
+					system("pause");
 				}
 				else if (counter== 4) {
-					//Increase Ingredient
+					cout << "Enter ingredient name : "; string name;
+					getline(cin, name);
+					database.stock.DecraseIngredientPrice(name);
 				}
 				else if (counter == 5) {
-					//Decrase Ingredient
+					cout << "Enter ingredient name : "; string name;
+					getline(cin, name);
+					database.stock.IncreaseIngredientPrice(name);
 				}
 				else if (counter == 6) {
 					AdminPanel(CurrentAdmin);
@@ -341,7 +489,50 @@ public:
 			system("cls");
 			database.kitchen.ShowAllMeals();
 			
-			order(CurrentTable);
+			if (!IsReadyOrder) {
+				vector<Meal>meals;
+				do
+				{
+					string meal_name;
+					cout << "Enter Meal Name : " << endl;
+					getline(cin, meal_name);
+					int choose = 0;
+					Meal* CurrentMealPtr = database.kitchen.GetMealPtrByName(meal_name);
+					if (CurrentMealPtr != nullptr) {
+						Meal CurrentMeal = database.kitchen.GetMealByName(meal_name);
+						cout << "Do yu want to continue to order Yes(1) : " << endl;
+						cin >> choose;
+						cin.ignore();
+						cin.clear();
+						meals.push_back(CurrentMeal);
+						if (choose == 1) {
+							continue;
+						}
+						else {
+							break;
+						}
+					}
+					else {
+						cout << "There is not meal by this name. Try again." << endl;
+					}
+				} while (true);
+				Order ord(CurrentTable.GetTableNo(), meals);
+				database.restaurant.GetTableByNoPtr(table_no)->AddOrder(ord);
+				database.kitchen.AddOrder(ord);
+			}
+			else{
+				system("cls");
+				cout<<"Message : " << "Your meal is ready" << endl;
+				system("pause");
+
+				cout << "Enter Meal name : "; string meal_name; getline(cin, meal_name);
+				cout << "Enter rating 1-10 for meal : ";
+				int rating;
+				cin >> rating;
+				auto meal = database.kitchen.GetMealByName(meal_name);
+				meal.AddRating(rating);
+			}
+
 			system("pause");
 			
 
@@ -357,38 +548,5 @@ public:
 
 	}
 
-
-	void order(Table& table) {
-		vector<Meal>meals;
-		do
-		{
-			string meal_name;
-			cout << "Enter Meal Name : " << endl;
-			getline(cin, meal_name);
-			int choose = 0;
-			Meal* CurrentMealPtr = database.kitchen.GetMealPtrByName(meal_name);
-			if (CurrentMealPtr != nullptr) {
-				Meal CurrentMeal = database.kitchen.GetMealByName(meal_name);
-				cout << "Do yu want to continue to order Yes(1) : " << endl;
-				cin >> choose;
-				cin.ignore();
-				cin.clear();
-				meals.push_back(CurrentMeal);
-				if (choose == 1) {
-					continue;
-				}
-				else {
-					break;
-				}
-			}
-			else {
-				cout << "There is not meal by this name. Try again." << endl;
-			}
-		} while (true);
-		Order ord(table.GetTableNo(), meals);
-		table.AddOrder(ord);
-		database.kitchen.AddOrder(ord);
-
-	}
 
 };
