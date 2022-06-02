@@ -18,6 +18,9 @@ public:
 	Ingredient() {
 
 	}
+	Ingredient(const string& name) {
+		SetName(name);
+	}
 	Ingredient(const string& name, const double& fats, const double& protein, const double& carbohydrates, const double& kcal, const double& price) {
 		SetName(name);
 		SetFats(fats);
@@ -104,6 +107,12 @@ public:
 		SetName(name);
 		SetRating(rating);
 		SetPrice();
+	}
+
+	Meal(const string& name, const double& rating,const double& price) {
+		SetName(name);
+		SetRating(rating);
+		this->price = price;
 	}
 
 	vector<RecipeItem> GetItems()const {
@@ -261,6 +270,11 @@ public:
 		SetTableNo(table_no);
 	}
 
+	Table(const string& table_no,const bool& isready) {
+		SetTableNo(table_no);
+		this->IsReady = isready;
+	}
+
 	Table(const Table& other) {
 		this->SetTableNo(other.GetTableNo());
 		this->SetMessageFromKitchen(other.MessageFromKitchen);
@@ -299,7 +313,7 @@ class Restaurant {
 	string name;
 	string adress;
 	string city;
-	double budget = 0;
+	double budget;
 	vector<Admin> admins;
 	vector<Table> tables;
 public:
@@ -309,6 +323,9 @@ public:
 		SetAdress(adress);
 		SetCity(city);
 		budget = 0;
+	}
+	void SetBudget(const double& budget) {
+		this->budget = budget;
 	}
 	string GetName()const { return name; }
 	string GetAdress()const { return adress; }

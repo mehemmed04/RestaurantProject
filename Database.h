@@ -10,4 +10,5 @@ public:
 	Restaurant restaurant;
 	Stock stock;
 	Kitchen kitchen;
+	
 };
