@@ -4,9 +4,11 @@
 #include"Entities.h"
 #include"Database.h"
 #include"Functions.h"
+#include"FileHelper.h"
 #include<string>
 #include<conio.h>
 using namespace std;
+
 
 class Controller {
 	Admin CurrentAdmin;
@@ -21,28 +23,49 @@ public:
 		Table t2("T2");
 		Table t3("T3");
 
-		Restaurant r("Zeytin Bagi", "9-cu mkr", "Baku", vector<Admin>{Admin("admin", "admin")});
+		Restaurant r("Zeytin Bagi", "9-cu mkr", "Baku", vector<Admin>{Admin("admin", "admin") , Admin("admin", "12345")  });
 		database.restaurant = r;
 		database.restaurant.AddTable(t1);
 		database.restaurant.AddTable(t2);
 		database.restaurant.AddTable(t3);
 		Ingredient i1("Cheese", 20.3, 25.2, 3.2, 200.25, 1.5);
-		Ingredient i2("Tomato", 5, 1.2, 3.4, 170.25, 0.5);
+		Ingredient i2("Rice", 1, 6, 80, 240.25, 1.5);
+		Ingredient i3("Tomato", 5, 1.2, 3.4, 170.25, 0.5);
+		Ingredient i4("Salt", 0.1, 0.6, 0, 1, 0.1);
+		Ingredient i5("Beef", 23, 123, 12, 549, 15);
+		Ingredient i6("Cucumber", 1, 3, 9, 20, 0.5);
 
 		RecipeItem r1(i1, 3);
-		RecipeItem r2(i2, 2);
+		RecipeItem r2(i2, 200);
+		RecipeItem r3(i3, 200);
+		RecipeItem r4(i4, 2);
+		RecipeItem r5(i5, 300);
+		RecipeItem r6(i6, 300);
 
 		Meal m1("Dolma", 9.8);
-		m1.AddIngredient(r1);
-		m1.AddIngredient(r2);
+		m1.AddIngredient(r5);
+		m1.AddIngredient(r3);
 
 		Meal m2("Plov", 9.6);
-		m2.AddIngredient(r1);
+		m2.AddIngredient(r2);
+		m2.AddIngredient(r4);
+		m2.AddIngredient(r3);
+
+		Meal m3("Salat", 3.5);
+		m3.AddIngredient(r3);
+		m3.AddIngredient(r6);
+
 
 		database.stock.AddIngredient(i1);
 		database.stock.AddIngredient(i2);
+		database.stock.AddIngredient(i3);
+		database.stock.AddIngredient(i4);
+		database.stock.AddIngredient(i5);
+		database.stock.AddIngredient(i6);
 		database.kitchen.AddMeal(m1);
 		database.kitchen.AddMeal(m2);
+		database.kitchen.AddMeal(m3);
+		WriteDatabaseToFile(database);
 	}
 
 	void StartProject() {
@@ -272,7 +295,10 @@ public:
 			if (key == '\r') {// carriage return  = Enter
 				if (counter == 1) {
 					system("cls");
-					database.kitchen.ShowAllOrders();
+					if (!IsReadyOrder) {
+						database.kitchen.ShowAllOrders();
+					}
+					else cout << "There is not order." << endl;
 					system("pause");
 					int select = 0;
 					//Table CurrentTable;

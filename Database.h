@@ -11,4 +11,3 @@ public:
 	Stock stock;
 	Kitchen kitchen;
 };
-

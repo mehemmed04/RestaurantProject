@@ -106,6 +106,10 @@ public:
 		SetPrice();
 	}
 
+	vector<RecipeItem> GetItems()const {
+		return items;
+	}
+
 	void AddRating(const double& rating) {
 		double new_rating = (this->rating * items.size() + rating) / (items.size() + 1);
 		SetRating(new_rating);
@@ -139,6 +143,9 @@ public:
 
 	double GetRating()const {
 		return rating;
+	}
+	double GetPrice()const {
+		return price;
 	}
 
 	virtual void AddIngredient(RecipeItem item) {
@@ -219,6 +226,14 @@ public:
 		this->meals = meals;
 	}
 
+	string GetTableNo()const { return Table_no; }
+	vector<Meal> GetMeals()const {
+		return meals;
+	}
+	bool GetisReady()const {
+		return IsReady;
+	}
+
 	string GetTableNoByOrder() { return Table_no; }
 	void ShowOrder() {
 		for (auto meal : meals) {
@@ -295,6 +310,12 @@ public:
 		SetCity(city);
 		budget = 0;
 	}
+	string GetName()const { return name; }
+	string GetAdress()const { return adress; }
+	string GetCity()const { return city; }
+	double GetBudget()const { return budget; }
+	vector<Admin> GetAdmins()const { return admins; }
+	vector<Table> GetTables()const { return tables; }
 
 
 	Table* GetTableByNoPtr(const string& table_no) {
@@ -376,6 +397,9 @@ public:
 		return Ingredient(name, fats, protein, carbohydrates, kcal, price);
 
 	}
+	vector<Ingredient> GetIngredients()const {
+		return ingredients;
+	}
 
 	void AddIngredient(const Ingredient& ingredient) {
 		ingredients.push_back(ingredient);
@@ -438,6 +462,12 @@ public:
 		}
 	}
 
+	vector<Order> GetOrders()const {
+		return orders;
+	}
+	vector<Meal> GetMeals()const {
+		return meals;
+	}
 	Meal GetMeal() {
 		string name;
 		double rating;
